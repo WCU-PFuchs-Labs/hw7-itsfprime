@@ -72,7 +72,7 @@ public class Node implements Cloneable {
         } else if (operation instanceof Binop) {
             return "(" + left.toString() + " " + operation.toString() + " " + right.toString() + ")";
         } else {
-            return "<?>";
+            return "<?>"; // Unknown op
         }
     }
 
@@ -89,5 +89,39 @@ public class Node implements Cloneable {
         if (right != null) b.right = (Node) right.clone();
         if (operation != null) b.operation = (Op) operation.clone();
         return b;
+    }
+
+    /**
+     * Preorder traversal: visit self, then left, then right
+     */
+    public void traverse(Collector c) {
+        c.collect(this);
+        if (left != null) left.traverse(c);
+        if (right != null) right.traverse(c);
+    }
+
+    /**
+     * Swap this node's left child with trunk's left child
+     */
+    public void swapLeft(Node trunk) {
+        Node temp = this.left;
+        this.left = trunk.left;
+        trunk.left = temp;
+    }
+
+    /**
+     * Swap this node's right child with trunk's right child
+     */
+    public void swapRight(Node trunk) {
+        Node temp = this.right;
+        this.right = trunk.right;
+        trunk.right = temp;
+    }
+
+    /**
+     * Return true if this node is a leaf (Unop)
+     */
+    public boolean isLeaf() {
+        return (operation instanceof Unop);
     }
 }
